@@ -1,20 +1,50 @@
-# Screen Brightness Checker
+# Fluency Checker
 
-Detect if screen is black/locked before taking screenshots on macOS.
+macOS screen quality detection tool - detects stuttering, lag, black screen, and flash issues.
+
+## Features
+
+- **Black Screen Detection**: Detects when screen is black/off/locked
+- **Freeze Detection**: Detects screen freezes (no motion)
+- **Flash Detection**: Detects sudden brightness changes
+- **Stutter Detection**: Detects irregular motion patterns (jank)
+
+## Requirements
+
+```bash
+pip3 install numpy opencv-python pillow
+```
 
 ## Usage
 
 ```bash
-# Check if screen has content
-python3 check_screen.py
+# Run detection for 30 seconds
+python3 detector.py
 
-# Or use the shell script
-bash screenshot_with_check.sh
-``"
+# Import as module
+from detector import ScreenDetector
 
-## How it works
+detector = ScreenDetector()
+results = detector.analyze(duration=60, interval=0.5)
+print(results)
+```
 
-1. Takes a small screenshot using ` screencapture`
-2. Converts to grayscale and calculates average brightness
-3. If brightness < 15, screen is considered black/locked
-4. Returns exit code 0 (has content) or 1 (black)
+## Parameters
+
+- `threshold_brightness`: Minimum brightness to consider screen active (default: 15)
+- `threshold_motion`: Minimum motion to consider screen updating (default: 0.02)
+- `freeze_frames`: Number of consecutive frames with no motion to detect freeze (default: 5)
+
+## How It Works
+
+1. Captures screen frames at regular intervals
+2. Analyzes brightness and motion between frames
+3. Detects anomalies:
+   - Black screen: Average brightness < threshold
+   - Freeze: No motion between consecutive frames
+   - Flash: Sudden brightness change > 100
+   - Stutter: Inconsistent motion patterns
+
+## License
+
+MIT
