@@ -201,7 +201,7 @@ class VideoAnalyzer:
             prev_brightness = brightness
             frame_num += 1
         
-        cap.close()
+        cap.release()
         
         # Summary
         result = {
